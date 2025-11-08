@@ -1,0 +1,179 @@
+---
+title: 'SPLATONIC: Architectural Support for 3D Gaussian Splatting SLAM via Sparse Processing'
+authors:
+  - name: Xiaotong Huang
+    notes: ["1", "*"]
+  - name: He Zhu
+    notes: ["1", "*"]
+  - name: Tianrui Ma
+    notes: ["2"]
+  - name: Yuxiang Xiong
+    notes: ["1"]
+  - name: Fangxin Liu
+    notes: ["1"]
+  - name: Zhezhi He
+    notes: ["1"]
+  - name: Yiming Gan 
+    notes: ["2"]
+  - name: Zihan Liu
+    notes: ["1"]
+  - name: Jingwen Leng
+    notes: ["1"]
+  - name: Yu Feng
+    notes: ["1"]
+  - name: Minyi Guo
+    notes: ["1"]
+conference: HPCA 2026
+notes:
+  - symbol: "1"
+    text: Shanghai Jiao Tong University
+  - symbol: "2"
+    text: Institute of Computing Technology, Chinese Academy of Sciences
+  - symbol: "*"
+    text: Equal contribution
+links:
+  - name: Paper
+    url: https://github.com/RomanHauksson/academic-project-astro-
+    icon: ri:file-pdf-2-line
+  # - name: Code (coming soon)
+  #   url: https://github.com/RomanHauksson/academic-project-astro-
+  #   icon: ri:github-line
+  # - name: arXiv
+  #   url: https://github.com/RomanHauksson/academic-project-astro-
+  #   icon: academicons:arxiv
+
+# The color theme of the page. Defaults to "device" (the preference set in the user's brower or operating system). Setting this to "light" or "dark" will override the user's preference. This is useful if your figures only look good in one theme.
+theme: device
+
+# This is the icon that appears in the user's browser tab. To customize, change the favicon.svg file in /public/, or add your own file to /public/ and change the filename here.
+# favicon: favicon.svg
+
+# These keys are optional. If a link to your project page is in a Google search result, text message, or social media post, it will often appear as a "link preview card" based on its title, description, favicon, and thumbnail. After you publish your page, you can double check that these previews look right using [this tool](https://linkpreview.xyz/)
+# description: Simple project page template for your research paper, built with Astro and Tailwind
+# thumbnail: screenshot-light.png
+---
+
+import Video from "./components/Video.astro";
+import HighlightedSection from "./components/HighlightedSection.astro";
+import SmallCaps from "./components/SmallCaps.astro";
+import Figure from "./components/Figure.astro";
+import Picture from "./components/Picture.astro";
+import ModelViewer from "./components/ModelViewer.astro"
+import TwoColumns from "./components/TwoColumns.astro";
+import YouTubeVideo from "./components/YouTubeVideo.astro";
+import { Comparison } from "./components/Comparison.tsx";
+import { Carousel } from "./components/Carousel.tsx";
+
+import v_room0_splatam_10x from "./assets/videos/room0_splatam_10x.mp4";
+import v_room0_splatonic_10x from "./assets/videos/room0_splatonic_10x.mp4";
+import v_office0_splatam_10x from "./assets/videos/office0_splatam_10x.mp4";
+import v_office0_splatonic_10x from "./assets/videos/office0_splatonic_10x.mp4";
+
+export const proj = <span class="italic">SPLATONIC</span>;
+
+{/* <TwoColumns>
+</TwoColumns> */}
+<div class="height-[70%]">
+<Figure class="mb-0">
+  <Video slot="figure" src={v_office0_splatam_10x} alt="room0_splatam" />
+</Figure>
+<Figure >
+  <Video slot="figure" src={v_office0_splatonic_10x} alt="room0_splatonic" />
+</Figure>
+</div>
+
+Tracking for (below) our method and (above) conventional 3DGS SLAM.
+
+<h2 class="center-h2">Abstract</h2>
+
+3D Gaussian splatting (3DGS) has emerged as a promising direction for SLAM due to its high-fidelity reconstruction and rapid convergence. 
+However, 3DGS-SLAM algorithms remain impractical for mobile platforms due to their high computational cost, especially for their tracking process. 
+
+This work introduces {proj}, a sparse and efficient real-time 3DGS-SLAM algorithm-hardware co-design for resource-constrained devices. 
+Inspired by classical SLAMs, we propose an adaptive sparse pixel sampling algorithm that reduces the number of rendered pixels by up to 256$\times$ while retaining accuracy. 
+To unlock this performance potential on mobile GPUs, we design a novel pixel-based rendering pipeline that improves hardware utilization via Gaussian-parallel rendering and preemptive $\alpha$-checking.
+Together, these optimizations yield up to 121.7$\times$ speedup on the bottleneck stages and 14.6$\times$ end-to-end speedup on off-the-shelf GPUs. 
+To further address new bottlenecks introduced by our rendering pipeline, we propose a pipelined architecture that simplifies the overall design while addressing newly emerged bottlenecks in projection and aggregation. 
+Evaluated across four 3DGS-SLAM algorithms, {proj} achieves up to 274.9$\times$ speedup and 4738.5$\times$ energy savings over mobile GPUs and up to 25.2$\times$ speedup and 241.1$\times$ energy savings over state-of-the-art accelerators, all with comparable accuracy.
+
+<h2 class="center-h2">Architecture</h2>
+
+We proposed a pixel-based rendering pipeline to improve GPU thread utilization under our sparse pixel sampling algorithm. 
+Specifically,we shift from pixel-wise parallelism to Gaussian-wise parallelism in both the rasterization and reverse rasterization stages. 
+Additionally, we introduce an optimization, preemptive $\alpha$-checking, that moves $\alpha$-checking from rasterization to projection in the pipeline. 
+{/* Instead of assigning one thread per pixel, our pipeline enables threads within a GPU warp to co-render a single pixel. */}
+{/* This not only reduces the workload of subsequent stages but also eliminates warp divergence in rasterization. */}
+
+<Figure>
+  <Picture slot="figure" src="../assets/images/3dgs_slam_overview.pdf" alt="Overview of our \textit\{pixel-based rendering} pipeline" invertInDarkMode />
+</Figure>
+
+{/* Overview of our pipelined architecture. Our architecture is built upon \textsc{MetaSapiens}~\cite{lin2025metasapiens}, a 3DGS accelerator for the forward pass only.  */}
+Our architecture is built upon <a href="https://arxiv.org/abs/2407.00435"><span>MetaSapiens</span></a>.
+We augment the baseline architecture to support the backward pass. 
+Specifically, we co-design a simplified rasterization engine (purple-colored) that mitigates the PE under-utilization in rasterization and reverse rasterization. 
+We also propose a caching technique between these two stages to avoid the across-thread reduction in reverse rasterization. 
+Meanwhile, we augment the projection unit (pink-colored) to support preemptive $\alpha$-checking and design a dedicated aggregation unit (yellow-colored) to accelerate reverse rasterization.
+
+<Figure>
+  <Picture slot="figure" src="../assets/images/arch_overview.pdf" alt="Overview of our pipelined architecture." invertInDarkMode />
+</Figure>
+
+<h2 class="center-h2">Results</h2>
+<h3 class="center-h3">Accuracy</h3>
+We report absolute trajectory error (ATE) and PSNR on Replica and TUM datasets. 
+The results supports the effectiveness of our sparse sampling algorithm.
+<TwoColumns>
+<Figure slot="left">
+  <Picture slot="figure" src="../assets/images/overall_acc.pdf" alt="Tracking accuracy and reconstruction quality evaluation on Replica" />
+  <Fragment slot="caption">Evaluation on Replica dataset.</Fragment>
+</Figure>
+<Figure slot="right">
+  <Picture slot="figure" src="../assets/images/overall_tum_acc.pdf" alt="Tracking accuracy and reconstruction quality evaluation on TUM" />
+  <Fragment slot="caption">Evaluation on TUM dataset.</Fragment>
+</Figure>
+</TwoColumns>
+
+<h3 class="center-h3">GPU Performance</h3>
+We show that our sampling algorithm with proposed rendering pipeline achieves significant speedup and energy saving on off-the-shelf GPUs without hardware support.
+*Orig.+S* refers to applying our sparse sampling algorithm on the original rendering pipeline.
+<TwoColumns>
+  <Figure slot="left">
+    <Picture slot="figure" src="../assets/images/gpu_tracking_mapping_perf.pdf" alt="Tracking and mapping performance" />
+  </Figure>
+  <Figure slot="right">
+    <Picture slot="figure" src="../assets/images/gpu_e2e_perf.pdf" alt="e2e performance" />
+  </Figure>
+</TwoColumns>
+
+<h3 class="center-h3">Hardware Performance</h3>
+We compare {proj} with other architectures on the tracking performance. 
+For fair comparison, we include the variants that incorporate our sparse sampling algorithm, denoted with the "*+S*" suffix.
+Numbers are normalized against GPU.
+<Figure>
+  <div class="w-[50%]" slot="figure">
+    <Picture  src="../assets/images/hw_perf.pdf" alt="e2e performance"/>
+  </div>
+</Figure>
+
+<h2 class="center-h2">More videos</h2>
+  <TwoColumns>
+    <Figure slot="left">
+      <Video slot="figure" src={v_room0_splatam_10x} alt="office0_splatam" />
+    </Figure>
+    <Figure slot="right">
+      <Video slot="figure" src={v_room0_splatonic_10x} alt="office0_splatonic" />
+    </Figure>
+  </TwoColumns>
+
+## BibTeX
+
+```bibtex
+@inproceedings{xiao2026splatonic,
+  author = "Huang, Xiaotong and Zhu, He and Ma, Tianrui and Xiong, Yuxiang and Liu, Fangxin and He, Zhezhi and Gan, Yiming and Liu, Zihan and Leng, Jingwen and Feng, Yu and Guo, Minyi",
+  title = "SPLATONIC: Architectural Support for 3D Gaussian Splatting SLAM via Sparse Processing",
+  year = "2026",
+  booktitle = "Proceedings of the IEEE International Symposium on High Performance Computer Architecture",
+}
+```
+

@@ -1,0 +1,54 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark {
+  &:where([data-theme="dark"] *) {
+    @slot;
+  }
+  &:where([data-theme="device"] *) {
+    @media (prefers-color-scheme: dark) {
+      @slot;
+    }
+  }
+}
+
+.expressive-code {
+  width: 100%;
+}
+
+@font-face {
+  font-family: 'Noto Sans Variable';
+  src: url('../assets/fonts/Noto_Sans/NotoSans-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+  font-style: italic;
+  font-weight: 100 900; /* 允许权重从100到900变化 */
+}
+
+@font-face {
+  font-family: 'Noto Sans Variable';
+  src: url('../assets/fonts/Noto_Sans/NotoSans-VariableFont_wdth,wght.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 100 900; /* 允许权重从100到900变化 */
+}
+
+:root {
+  --font-noto-sans: 'Noto Sans Variable', sans-serif;
+}
+
+.center-h2 {
+  @apply text-center font-bold text-4xl mb-4 mt-8;
+}
+
+.center-h3 {
+  @apply text-center font-semibold text-3xl mb-4 mt-8;
+}
+
+.embla {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+}
+.embla__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
