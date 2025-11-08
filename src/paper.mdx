@@ -64,25 +64,12 @@ import YouTubeVideo from "./components/YouTubeVideo.astro";
 import { Comparison } from "./components/Comparison.tsx";
 import { Carousel } from "./components/Carousel.tsx";
 
-import v_room0_splatam_10x from "./assets/videos/room0_splatam_10x.mp4";
-import v_room0_splatonic_10x from "./assets/videos/room0_splatonic_10x.mp4";
-import v_office0_splatam_10x from "./assets/videos/office0_splatam_10x.mp4";
-import v_office0_splatonic_10x from "./assets/videos/office0_splatonic_10x.mp4";
-
 export const proj = <span class="italic">SPLATONIC</span>;
 
 {/* <TwoColumns>
 </TwoColumns> */}
-<div class="height-[70%]">
-<Figure class="mb-0">
-  <Video slot="figure" src={v_office0_splatam_10x} alt="room0_splatam" />
-</Figure>
-<Figure >
-  <Video slot="figure" src={v_office0_splatonic_10x} alt="room0_splatonic" />
-</Figure>
-</div>
 
-Tracking for (below) our method and (above) conventional 3DGS SLAM.
+{/* Tracking for (below) our method and (above) conventional 3DGS SLAM. */}
 
 <h2 class="center-h2">Abstract</h2>
 
@@ -96,7 +83,7 @@ Together, these optimizations yield up to 121.7$\times$ speedup on the bottlenec
 To further address new bottlenecks introduced by our rendering pipeline, we propose a pipelined architecture that simplifies the overall design while addressing newly emerged bottlenecks in projection and aggregation. 
 Evaluated across four 3DGS-SLAM algorithms, {proj} achieves up to 274.9$\times$ speedup and 4738.5$\times$ energy savings over mobile GPUs and up to 25.2$\times$ speedup and 241.1$\times$ energy savings over state-of-the-art accelerators, all with comparable accuracy.
 
-<h2 class="center-h2">Architecture</h2>
+<h2 class="center-h2">Contribution</h2>
 
 We proposed a pixel-based rendering pipeline to improve GPU thread utilization under our sparse pixel sampling algorithm. 
 Specifically,we shift from pixel-wise parallelism to Gaussian-wise parallelism in both the rasterization and reverse rasterization stages. 
@@ -106,10 +93,10 @@ Additionally, we introduce an optimization, preemptive $\alpha$-checking, that m
 
 <Figure>
   <Picture slot="figure" src="../assets/images/3dgs_slam_overview.pdf" alt="Overview of our \textit\{pixel-based rendering} pipeline" invertInDarkMode />
+  <Fragment slot="caption">Overview of our pixel-based rendering pipeline.</Fragment>
 </Figure>
 
-{/* Overview of our pipelined architecture. Our architecture is built upon \textsc{MetaSapiens}~\cite{lin2025metasapiens}, a 3DGS accelerator for the forward pass only.  */}
-Our architecture is built upon <a href="https://arxiv.org/abs/2407.00435"><span>MetaSapiens</span></a>.
+Our architecture is built upon a pipelined 3DGS accelerator <a href="https://arxiv.org/abs/2407.00435"><span>MetaSapiens</span></a>.
 We augment the baseline architecture to support the backward pass. 
 Specifically, we co-design a simplified rasterization engine (purple-colored) that mitigates the PE under-utilization in rasterization and reverse rasterization. 
 We also propose a caching technique between these two stages to avoid the across-thread reduction in reverse rasterization. 
@@ -117,6 +104,7 @@ Meanwhile, we augment the projection unit (pink-colored) to support preemptive $
 
 <Figure>
   <Picture slot="figure" src="../assets/images/arch_overview.pdf" alt="Overview of our pipelined architecture." invertInDarkMode />
+  <Fragment slot="caption">Overview of our pipelined architecture.</Fragment>
 </Figure>
 
 <h2 class="center-h2">Results</h2>
@@ -140,9 +128,11 @@ We show that our sampling algorithm with proposed rendering pipeline achieves si
 <TwoColumns>
   <Figure slot="left">
     <Picture slot="figure" src="../assets/images/gpu_tracking_mapping_perf.pdf" alt="Tracking and mapping performance" />
+    <Fragment slot="caption">The speedup and energy savings comparison on tracking and mapping</Fragment>
   </Figure>
   <Figure slot="right">
     <Picture slot="figure" src="../assets/images/gpu_e2e_perf.pdf" alt="e2e performance" />
+    <Fragment slot="caption">The end-to-end speedup and energy savings on Orin.</Fragment>
   </Figure>
 </TwoColumns>
 
@@ -154,9 +144,17 @@ Numbers are normalized against GPU.
   <div class="w-[50%]" slot="figure">
     <Picture  src="../assets/images/hw_perf.pdf" alt="e2e performance"/>
   </div>
+  <Fragment slot="caption">The performance and energy consumption comparison across different dedicated architectures during tracking. </Fragment>
 </Figure>
 
+import v_room0_splatam_10x from "./assets/videos/room0_splatam_10x.mp4";
+import v_room0_splatonic_10x from "./assets/videos/room0_splatonic_10x.mp4";
+import v_office0_splatam_10x from "./assets/videos/office0_splatam_10x.mp4";
+import v_office0_splatonic_10x from "./assets/videos/office0_splatonic_10x.mp4";
+
 <h2 class="center-h2">More videos</h2>
+
+We provide more GPU performance comparisons between **(left) conventional** 3DGS SLAM and **(right) {proj}** to show strengths of our method in different scenarios.
   <TwoColumns>
     <Figure slot="left">
       <Video slot="figure" src={v_room0_splatam_10x} alt="office0_splatam" />
@@ -165,11 +163,23 @@ Numbers are normalized against GPU.
       <Video slot="figure" src={v_room0_splatonic_10x} alt="office0_splatonic" />
     </Figure>
   </TwoColumns>
+  <figcaption class="text-center mt-0">Comparison on *office0* scene.</figcaption>
+
+  <TwoColumns>
+    <Figure slot="left">
+      <Video slot="figure" src={v_office0_splatam_10x} alt="room0_splatam" />
+    </Figure>
+    <Figure slot="right">
+      <Video slot="figure" src={v_office0_splatonic_10x} alt="room0_splatonic" />
+    </Figure>
+  </TwoColumns>
+  <figcaption class="text-center mt-0">Comparison on *room0* scene.</figcaption>
+
 
 ## BibTeX
 
 ```bibtex
-@inproceedings{xiao2026splatonic,
+@inproceedings{huang2026splatonic,
   author = "Huang, Xiaotong and Zhu, He and Ma, Tianrui and Xiong, Yuxiang and Liu, Fangxin and He, Zhezhi and Gan, Yiming and Liu, Zihan and Leng, Jingwen and Feng, Yu and Guo, Minyi",
   title = "SPLATONIC: Architectural Support for 3D Gaussian Splatting SLAM via Sparse Processing",
   year = "2026",
