@@ -12,6 +12,8 @@ import astroExpressiveCode from "astro-expressive-code";
 
 // https://astro.build/config
 export default defineConfig({
+  output: 'static',
+  base: '/splatonic/', 
   vite: {
     plugins: [tailwindcss()],
   },
