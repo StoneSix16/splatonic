@@ -33,7 +33,7 @@ notes:
     text: Equal contribution
 links:
   - name: Paper
-    url: https://github.com/RomanHauksson/academic-project-astro-
+    url: https://stonesix16.github.io/splatonic/public/paper.pdf
     icon: ri:file-pdf-2-line
   # - name: Code (coming soon)
   #   url: https://github.com/RomanHauksson/academic-project-astro-
@@ -64,12 +64,12 @@ import YouTubeVideo from "./components/YouTubeVideo.astro";
 import { Comparison } from "./components/Comparison.tsx";
 import { Carousel } from "./components/Carousel.tsx";
 
+import v_demo from "./assets/videos/demo.mp4";
+
 export const proj = <span class="italic">SPLATONIC</span>;
 
-{/* <TwoColumns>
-</TwoColumns> */}
+<Video src={v_demo} alt="demo" />
 
-{/* Tracking for (below) our method and (above) conventional 3DGS SLAM. */}
 
 <h2 class="center-h2">Abstract</h2>
 
@@ -186,4 +186,8 @@ We provide more GPU performance comparisons between **(left) conventional** 3DGS
   booktitle = "Proceedings of the IEEE International Symposium on High Performance Computer Architecture",
 }
 ```
+
+## Acknowledgements
+
+We are sincerely grateful to Weikai Lin for providing valuable advice and support throughout this research.
 
