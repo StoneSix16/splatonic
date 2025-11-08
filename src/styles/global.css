@@ -42,7 +42,7 @@
   @apply text-center font-semibold text-3xl mb-4 mt-8;
 }
 
-.embla {
+/* .embla {
   overflow: hidden;
 }
 .embla__container {
@@ -51,4 +51,4 @@
 .embla__slide {
   flex: 0 0 100%;
   min-width: 0;
-}
+} */
