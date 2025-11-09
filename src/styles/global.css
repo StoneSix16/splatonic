@@ -30,6 +30,11 @@
   font-weight: 100 900; /* 允许权重从100到900变化 */
 }
 
+.prose :where(img) {
+  filter: none !important;
+  background-color: transparent !important;
+}
+
 :root {
   --font-noto-sans: 'Noto Sans Variable', sans-serif;
 }
@@ -41,14 +46,3 @@
 .center-h3 {
   @apply text-center font-semibold text-3xl mb-4 mt-8;
 }
-
-/* .embla {
-  overflow: hidden;
-}
-.embla__container {
-  display: flex;
-}
-.embla__slide {
-  flex: 0 0 100%;
-  min-width: 0;
-} */
